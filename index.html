@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For You ❤️</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Georgia, serif;
+  background: radial-gradient(circle at top, #0f172a, #020617);
+  color:white;
+  overflow:hidden;
+}
+
+/* Center */
+.screen{
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  text-align:center;
+}
+
+/* Glow */
+.glow{
+  font-size:50px;
+  animation:glow 2s infinite alternate;
+}
+@keyframes glow{
+  from{text-shadow:0 0 10px white;}
+  to{text-shadow:0 0 40px #ff4d6d;}
+}
+
+/* Envelope */
+.envelope{
+  font-size:120px;
+  margin-top:20px;
+  cursor:pointer;
+  transition:0.3s;
+}
+.envelope:hover{
+  transform:scale(1.1) rotate(-5deg);
+}
+
+/* Card */
+.card{
+  width:700px;
+  padding:35px;
+  border-radius:25px;
+  background:rgba(255,255,255,0.12);
+  backdrop-filter:blur(25px);
+  box-shadow:0 10px 40px rgba(0,0,0,0.7);
+}
+
+/* Text */
+#text,#finalText{
+  text-align:left;
+  line-height:1.8;
+  font-size:18px;
+  white-space:pre-line;
+}
+
+/* Button */
+button{
+  margin-top:20px;
+  padding:12px 25px;
+  border:none;
+  border-radius:25px;
+  background:#ff4d6d;
+  color:white;
+  cursor:pointer;
+}
+
+/* Stars */
+.star{
+  position:absolute;
+  width:2px;
+  height:2px;
+  background:white;
+}
+
+/* Floating hearts */
+.floatHeart{
+  position:absolute;
+  bottom:0;
+  animation:floatUp 6s linear infinite;
+}
+@keyframes floatUp{
+  to{transform:translateY(-100vh); opacity:0;}
+}
+
+/* Cursor spark */
+.spark{
+  position:absolute;
+  width:5px;
+  height:5px;
+  background:white;
+  border-radius:50%;
+  pointer-events:none;
+  animation:sparkFade 0.5s forwards;
+}
+@keyframes sparkFade{
+  to{opacity:0; transform:scale(2);}
+}
+</style>
+</head>
+
+<body>
+
+<!-- INTRO -->
+<div class="screen" id="intro">
+  <div class="glow">For You ❤️</div>
+  <div class="envelope">💌</div>
+  <p>Tap anywhere… 🎵</p>
+</div>
+
+<!-- LETTER -->
+<div class="screen" id="letter" style="display:none;">
+  <div class="card">
+    <h2>My Letter ❤️</h2>
+    <div id="text"></div>
+    <button onclick="next()">Continue 💖</button>
+  </div>
+</div>
+
+<!-- FINAL -->
+<div class="screen" id="final" style="display:none;">
+  <div class="card">
+    <h2>Thank You ❤️</h2>
+    <div id="finalText"></div>
+  </div>
+</div>
+
+<!-- 🎧 LOCAL MUSIC -->
+<audio id="music" loop preload="auto">
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+/* Stars */
+for(let i=0;i<120;i++){
+ let s=document.createElement("div");
+ s.className="star";
+ s.style.left=Math.random()*100+"vw";
+ s.style.top=Math.random()*100+"vh";
+ document.body.appendChild(s);
+}
+
+/* Floating hearts */
+setInterval(()=>{
+ let h=document.createElement("div");
+ h.className="floatHeart";
+ h.innerHTML="❤️";
+ h.style.left=Math.random()*100+"vw";
+ document.body.appendChild(h);
+ setTimeout(()=>h.remove(),6000);
+},700);
+
+/* Cursor sparkle */
+document.addEventListener("mousemove",e=>{
+ let s=document.createElement("div");
+ s.className="spark";
+ s.style.left=e.pageX+"px";
+ s.style.top=e.pageY+"px";
+ document.body.appendChild(s);
+ setTimeout(()=>s.remove(),500);
+});
+
+/* 🎧 MUSIC START + FADE */
+let started=false;
+
+document.addEventListener("click", ()=>{
+ if(!started){
+  let m=document.getElementById("music");
+  m.volume=0;
+  m.play().then(()=>{
+    let v=0;
+    let fade=setInterval(()=>{
+      if(v<1){
+        v+=0.05;
+        m.volume=v;
+      } else clearInterval(fade);
+    },100);
+  });
+  started=true;
+
+  /* open letter */
+  document.getElementById("intro").style.display="none";
+  document.getElementById("letter").style.display="flex";
+  type();
+ }
+},{once:true});
+
+/* LETTER TEXT */
+let msg=`My Dearest Bubu,
+
+Thank you for understanding me…
+for forgiving me…
+and for staying.
+
+You are my peace, my comfort,
+and the most beautiful part of my life.
+
+I just want to see you smile…
+always ❤️`;
+
+let i=0;
+function type(){
+ if(i<msg.length){
+  let c=msg.charAt(i);
+  document.getElementById("text").innerHTML+=c;
+
+  let delay=20;
+  if(c==="."||c===","||c==="\n") delay=300;
+  if(c==="❤️") delay=500;
+
+  i++;
+  setTimeout(type,delay);
+ }
+}
+
+/* NEXT */
+function next(){
+ document.getElementById("letter").style.display="none";
+ document.getElementById("final").style.display="flex";
+ typeFinal();
+}
+
+/* FINAL TEXT */
+let finalMsg=`Thank you for giving me another chance.
+
+I promise to take care of your heart,
+and to always try to keep you happy.
+
+Stay with me… always ❤️`;
+
+let j=0;
+function typeFinal(){
+ if(j<finalMsg.length){
+  let c=finalMsg.charAt(j);
+  document.getElementById("finalText").innerHTML+=c;
+
+  let delay=20;
+  if(c==="."||c===","||c==="\n") delay=300;
+  if(c==="❤️") delay=500;
+
+  j++;
+  setTimeout(typeFinal,delay);
+ }
+}
+</script>
+
+</body>
+</html>
